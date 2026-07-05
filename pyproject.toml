@@ -5,10 +5,16 @@ description = "Multi-agent system for wine value-for-money scoring: RAG, fine-tu
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "modal>=1.5.1",
+    "pydantic>=2.13.4",
+    "python-dotenv>=1.2.2",
+]
 
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.lint]
 select = ["E", "F", "B", "I", "N", "UP"]
 
 [tool.mypy]
@@ -19,3 +25,9 @@ ignore_missing_imports = true
 [tool.flake8]
 max-line-length = 100
 extend-ignore = ["E203"]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.1.0",
+    "ruff>=0.15.20",
+]
