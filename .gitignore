@@ -1,0 +1,43 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# OS
+.DS_Store
+
+# Environment / secrets
+.env
+*.env.local
+
+# Data
+data/
+*.csv
+*.parquet
+
+# Notebooks checkpoints
+.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+
+# Chroma / vector store persistence
+chroma_db/
+*.sqlite3
+
+# Model artifacts / checkpoints
+*.pt
+*.pth
+*.safetensors
+checkpoints/
+outputs/
+
+# Claude Code local settings
+.claude/settings.local.json

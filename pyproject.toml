@@ -1,0 +1,21 @@
+[project]
+name = "wine-vfm"
+version = "0.1.0"
+description = "Multi-agent system for wine value-for-money scoring: RAG, fine-tuned specialist, and ensemble agents behind a Gradio UI."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "B", "I", "N", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203"]
