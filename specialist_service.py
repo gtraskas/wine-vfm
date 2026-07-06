@@ -16,10 +16,11 @@ secrets = [modal.Secret.from_name("huggingface-secret")]
 GPU = "T4"
 BASE_MODEL = "meta-llama/Llama-3.2-3B"
 HF_USER = "gtraskas"
-# TODO: replace once the Kaggle QLoRA run finishes — pin the exact repo and
-# commit revision, do not point at a moving/in-progress repo.
-PROJECT_RUN_NAME = "wine-vfm-REPLACE_ME"
-REVISION = "REPLACE_ME"
+PROJECT_RUN_NAME = "wine-vfm-2026-07-05_06.37.24"
+# Step-1000 checkpoint: the run crashed mid-save at step 1200 (Kaggle disk
+# full), so this is the best checkpoint that actually made it to the Hub —
+# val_loss=1.603, still improving, no overfitting signal yet.
+REVISION = "1510d4d2430fc24c6702905aeccb2361cc9e58e6"
 FINETUNED_MODEL = f"{HF_USER}/{PROJECT_RUN_NAME}"
 
 QUESTION = (
