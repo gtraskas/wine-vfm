@@ -11,13 +11,12 @@ dollar spent. It's derived deterministically from a wine's critic score and
 price using a fixed logarithmic transform, scaled onto fixed analytic bounds
 (not fitted to the data) so the metric is reproducible from constants alone.
 
-```
+```text
 vfm = compute_vfm(points, price)
 ```
 
-See [`utils/vfm.py`](utils/vfm.py) for the exact formula and
-[`utils/vfm.py::verdict`](utils/vfm.py) for the bargain / fair / overpriced
-banding.
+See [`utils/vfm.py`](utils/vfm.py) for the exact formula and `verdict()`
+function for the bargain / fair / overpriced banding.
 
 ## Dataset
 
@@ -43,7 +42,7 @@ metadata:
 
 ## Project layout
 
-```
+```text
 utils/          # data curation, VFM formula, models, evaluation
 agents/         # RAG, specialist, ensemble, and orchestration agents
 ```
