@@ -15,8 +15,9 @@ price using a fixed logarithmic transform, scaled onto fixed analytic bounds
 vfm = compute_vfm(points, price)
 ```
 
-See [`utils/vfm.py`](utils/vfm.py) for the exact formula and `verdict()`
-function for the bargain / fair / overpriced banding.
+`compute_vfm` and the bargain / fair / overpriced `verdict()` banding land in
+`utils/vfm.py` once an agent in this repo needs them (the fine-tuned
+specialist predicts VFM directly, so it doesn't call this transform).
 
 ## Dataset
 
@@ -43,8 +44,8 @@ metadata:
 ## Project layout
 
 ```text
-utils/          # data curation, VFM formula, models, evaluation
-agents/         # RAG, specialist, ensemble, and orchestration agents
+utils/          # Wine model, deterministic text assembly (grows as agents need more)
+agents/         # base Agent, Preprocessor, SpecialistAgent (grows day by day)
 ```
 
 ## Setup
