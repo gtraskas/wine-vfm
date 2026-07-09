@@ -24,7 +24,7 @@ class SpecialistAgent(Agent):
         """Estimate a wine's VFM score (0-99).
 
         Args:
-            description: Text produced by agents.preprocessor.Preprocessor.
+            description: Text produced by utils.preprocessor.TextAssembler.
 
         Returns:
             Estimated VFM score.
