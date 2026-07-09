@@ -13,6 +13,7 @@ dependencies = [
 
 [tool.ruff]
 line-length = 100
+preview = true
 
 [tool.ruff.lint]
 select = ["E", "F", "B", "I", "N", "UP"]
@@ -28,6 +29,7 @@ extend-ignore = ["E203"]
 
 [dependency-groups]
 dev = [
+    "jupyter>=1.1.1",
     "mypy>=2.1.0",
     "ruff>=0.15.20",
 ]
