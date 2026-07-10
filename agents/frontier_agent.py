@@ -1,5 +1,4 @@
 """RAG agent: frontier LLM estimates points and price with retrieved context.
-
 The LLM never guesses the VFM construct directly — it estimates critic score
 and retail price (quantities that exist in the world), grounded by the 5 most
 similar wines from the vectorstore, and the frozen utils.vfm.compute_vfm maps
@@ -11,6 +10,7 @@ from __future__ import annotations
 from typing import cast
 
 import chromadb
+import numpy as np
 from openai import OpenAI
 from openai.types.chat import ChatCompletionMessageParam
 from pydantic import BaseModel
@@ -63,7 +63,7 @@ class FrontierAgent(Agent):
             (summaries, points, prices) of the N_SIMILARS nearest wines.
         """
         self.log(f"Searching vectorstore for {N_SIMILARS} similar wines")
-        vector = self.encoder.encode([description])
+        vector = np.asarray(self.encoder.encode([description]))
         results = self.collection.query(
             query_embeddings=vector.astype(float).tolist(), n_results=N_SIMILARS
         )
@@ -82,6 +82,7 @@ class FrontierAgent(Agent):
         """Format retrieved wines as context for the LLM prompt."""
         message = (
             "For context, here are wines with similar tasting notes, "
+            "variety, country, province, and winery, "
             "with their critic scores and prices.\n\n"
         )
         for similar, pts, price in zip(similars, points, prices, strict=True):
