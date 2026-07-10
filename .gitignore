@@ -30,6 +30,7 @@ data/
 
 # Chroma / vector store persistence
 chroma_db/
+wine_vectorstore/
 *.sqlite3
 
 # Model artifacts / checkpoints

@@ -6,9 +6,19 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
+    "chromadb>=1.5.9",
+    "datasets>=5.0.0",
+    "joblib>=1.5.3",
     "modal>=1.5.1",
+    "numpy>=2.5.1",
+    "openai>=2.45.0",
+    "plotly>=6.9.0",
     "pydantic>=2.13.4",
     "python-dotenv>=1.2.2",
+    "scikit-learn>=1.9.0",
+    "sentence-transformers>=5.6.0",
+    "torch>=2.13.0",
+    "tqdm>=4.68.4",
 ]
 
 [tool.ruff]

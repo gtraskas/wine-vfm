@@ -7,6 +7,9 @@ inference-time prompts will not match what the model was trained on.
 
 from __future__ import annotations
 
+from typing import Self
+
+from datasets import load_dataset
 from pydantic import BaseModel
 
 PREFIX: str = "Value score: "
@@ -47,3 +50,21 @@ class Wine(BaseModel):
 
     def __repr__(self) -> str:
         return f"<{self.title} = VFM {self.vfm} ({self.points:.0f} pts / ${self.price:.0f})>"
+
+    @classmethod
+    def from_hub(cls, dataset_name: str) -> tuple[list[Self], list[Self], list[Self]]:
+        """Load the curated dataset from the HuggingFace Hub.
+
+        Args:
+            dataset_name: Hub dataset id with train/validation/test splits.
+
+        Returns:
+            (train, validation, test) lists of Wine objects. Extra columns in
+            the dataset (training prompts, ids) are ignored by validation.
+        """
+        ds = load_dataset(dataset_name)
+        return (
+            [cls.model_validate(row) for row in ds["train"]],
+            [cls.model_validate(row) for row in ds["validation"]],
+            [cls.model_validate(row) for row in ds["test"]],
+        )

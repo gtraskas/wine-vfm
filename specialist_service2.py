@@ -57,7 +57,7 @@ class WineSpecialist:
         from peft import PeftModel
         from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
-        quant_config = BitsAndBytesConfig(
+        quant_config = BitsAndBytesConfig(  # type: ignore[no-untyped-call]
             load_in_4bit=True,
             bnb_4bit_use_double_quant=True,
             bnb_4bit_compute_dtype=torch.float16,
@@ -95,7 +95,7 @@ class WineSpecialist:
         inputs = self.tokenizer.encode(prompt, return_tensors="pt").to("cuda")
         with torch.no_grad():
             outputs = self.fine_tuned_model.generate(inputs, max_new_tokens=5)
-        result = self.tokenizer.decode(outputs[0])
+        result = str(self.tokenizer.decode(outputs[0]))
         contents = result.split(PREFIX)[1]
         match = re.search(r"\d+", contents)
         return int(match.group()) if match else 0

@@ -49,7 +49,7 @@ def estimate_vfm(description: str) -> int:
 
     prompt = f"{QUESTION}\n\n{description}\n\n{PREFIX}"
 
-    quant_config = BitsAndBytesConfig(
+    quant_config = BitsAndBytesConfig(  # type: ignore[no-untyped-call]
         load_in_4bit=True,
         bnb_4bit_use_double_quant=True,
         bnb_4bit_compute_dtype=torch.float16,
@@ -69,7 +69,7 @@ def estimate_vfm(description: str) -> int:
     inputs = tokenizer.encode(prompt, return_tensors="pt").to("cuda")
     with torch.no_grad():
         outputs = fine_tuned_model.generate(inputs, max_new_tokens=5)
-    result = tokenizer.decode(outputs[0])
+    result = str(tokenizer.decode(outputs[0]))
     contents = result.split(PREFIX)[1]
     match = re.search(r"\d+", contents)
     return int(match.group()) if match else 0

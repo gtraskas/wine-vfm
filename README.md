@@ -15,9 +15,10 @@ price using a fixed logarithmic transform, scaled onto fixed analytic bounds
 vfm = compute_vfm(points, price)
 ```
 
-`compute_vfm` and the bargain / fair / overpriced `verdict()` banding land in
-`utils/vfm.py` once an agent in this repo needs them (the fine-tuned
-specialist predicts VFM directly, so it doesn't call this transform).
+See [`utils/vfm.py`](utils/vfm.py) for the exact formula. The frontier RAG
+agent estimates critic score and price, then maps them through this frozen
+transform; the fine-tuned specialist predicts VFM directly. The bargain /
+fair / overpriced `verdict()` banding lands here once the UI needs it.
 
 ## Dataset
 

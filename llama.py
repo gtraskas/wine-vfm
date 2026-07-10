@@ -33,5 +33,5 @@ def generate(prompt: str) -> str:
 
     set_seed(42)
     inputs = tokenizer.encode(prompt, return_tensors="pt").to("cuda")
-    outputs = model.generate(inputs, max_new_tokens=5)
+    outputs = model.generate(inputs, max_new_tokens=5)  # type: ignore[misc]
     return str(tokenizer.decode(outputs[0]))
