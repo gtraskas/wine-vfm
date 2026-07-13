@@ -39,8 +39,8 @@ and this project has all of them:
   to each other. Here it's the framework holding the vectorstore, and a
   memory file both the scanner and the UI read.
 - **A planning agent** — the thing that decides what happens when. It can be
-  plain code (our `PlanningAgent`) or an LLM given tools that wrap the other
-  agents (our `AutonomousPlanningAgent`, where the model doesn't even know
+  plain code (`PlanningAgent`) or an LLM given tools that wrap the other
+  agents (`AutonomousPlanningAgent`, where the model doesn't even know
   its tools are agents).
 - **Autonomy and memory** — the system persists beyond one chat: it
   remembers what it already surfaced, runs in the background, and reaches
