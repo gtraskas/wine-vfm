@@ -24,6 +24,7 @@ from pydantic import BaseModel, Field
 from tqdm import tqdm
 
 from utils.items import Wine
+from utils.vfm import MAX_PRICE, MIN_PRICE, compute_vfm
 
 SHOP_URL = "https://bottlebarn.com"
 PAGE_SIZE = 250
@@ -63,6 +64,20 @@ class ScrapedListing:
     def has_score(self) -> bool:
         """True if the description contains a printed critic score."""
         return bool(SCORE_PATTERN.search(self.text))
+
+    def scored_vfm(self) -> int | None:
+        """VFM from the first printed critic score and the shop price.
+
+        A heuristic for RANKING candidates only — the regex can misread
+        (the LLM extraction validates the real score afterwards). The
+        clip to the curation price band keeps compute_vfm's bounds valid.
+        """
+        match = SCORE_PATTERN.search(self.text)
+        if match is None:
+            return None
+        points = float(match.group(1))
+        price = min(max(self.price, MIN_PRICE), MAX_PRICE)
+        return compute_vfm(points, price)
 
     def describe(self) -> str:
         """Format the listing for the scanner LLM prompt."""

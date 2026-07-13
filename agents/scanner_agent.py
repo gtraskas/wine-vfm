@@ -1,9 +1,11 @@
-"""Scans the wine shop for critic-scored listings and extracts them.
+"""Scans the wine shop for critic-scored, high-value listings.
 
 Fetches live listings, keeps only those with a printed critic score, and
-has the LLM select the five best-documented wines — extracting the score,
-price, and the structured fields the rest of the system expects. Listings
-without an explicit printed score are never included.
+ranks them by VFM computed from the printed score and shop price — pure
+Python, no model call — so only the best-value candidates reach the LLM.
+The LLM then selects the five best-documented of those and extracts the
+score, price, and the structured fields the rest of the system expects.
+Listings without an explicit printed score are never included.
 """
 
 from __future__ import annotations
@@ -18,9 +20,10 @@ MODEL = "gpt-5-mini"
 MAX_CANDIDATES = 50
 
 SYSTEM_PROMPT = """You identify the 5 best-documented wines from a list of shop listings and \
-extract their details. Select only listings that have BOTH an explicit printed critic score \
-(like 'James Suckling, 95 Points') AND a quoted tasting note. Only grape wines — never \
-whiskey, bourbon, beer, sake, or other spirits.
+extract their details. The listings are ordered by value for money, best first — prefer \
+earlier listings whenever their documentation is adequate. Select only listings that have \
+BOTH an explicit printed critic score (like 'James Suckling, 95 Points') AND a quoted \
+tasting note. Only grape wines — never whiskey, bourbon, beer, sake, or other spirits.
 
 For each selected wine extract: the title, the quoted tasting note (the critic's prose, \
 without surrounding quotes), the critic score as an integer (if several critics are shown, \
@@ -30,8 +33,9 @@ the title or region hierarchy; use an empty string only as a last resort.
 
 Respond strictly in JSON. Never include a wine whose critic score or price is unclear."""
 
-USER_PROMPT_PREFIX = """Here are the shop listings. Select and extract the 5 wines with the \
-clearest printed critic score and the most detailed tasting note:
+USER_PROMPT_PREFIX = """Here are the shop listings, ordered by value for money (best first). \
+Select and extract the 5 wines with the clearest printed critic score and the most detailed \
+tasting note, preferring the earliest (best value) listings:
 
 """
 
@@ -49,13 +53,14 @@ class ScannerAgent(Agent):
         self.log("Ready")
 
     def fetch_listings(self, memory: list[str]) -> list[ScrapedListing]:
-        """Fetch fresh critic-scored listings not already seen.
+        """Fetch fresh critic-scored listings, ranked best value first.
 
         Args:
             memory: URLs of listings surfaced in previous runs.
 
         Returns:
-            Up to MAX_CANDIDATES unseen listings with a printed score.
+            Up to MAX_CANDIDATES unseen scored listings, ordered by VFM
+            computed from the printed score and shop price (descending).
         """
         self.log("Fetching listings from the shop")
         scraped = ScrapedListing.fetch()
@@ -64,7 +69,8 @@ class ScannerAgent(Agent):
             for listing in scraped
             if listing.has_score() and listing.url not in memory
         ]
-        self.log(f"Found {len(candidates)} unseen critic-scored listings")
+        candidates.sort(key=lambda listing: listing.scored_vfm() or 0, reverse=True)
+        self.log(f"Found {len(candidates)} unseen critic-scored listings, ranked by VFM")
         return candidates[:MAX_CANDIDATES]
 
     @staticmethod
