@@ -1,0 +1,87 @@
+[
+  {
+    "listing": {
+      "title": "2023 Grounded by Josh Phelps Cabernet Sauvignon [WE92][JS90]",
+      "tasting_note": "This wine is deep, with aromas of cassis, black raspberry, cardamom, dried potpourri and mulled spices on the nose. The flavors on the palate are black strawberry, blueberry preserve and black tea leaves woven with lemon zest, black peppercorn and a long finish. Decant and pair with braised beef cheeks crusted with whole-grain mustard.",
+      "points": 92,
+      "price": 14.99,
+      "url": "https://bottlebarn.com/products/2023-grounded-by-joseph-phelps-cabernet-sauvignon",
+      "variety": "Cabernet Sauvignon",
+      "country": "United States",
+      "province": "California",
+      "region": "California",
+      "winery": "Grounded Wine Co."
+    },
+    "estimated_vfm": 48,
+    "actual_vfm": 67,
+    "delta": 19
+  },
+  {
+    "listing": {
+      "title": "2022 Cune Vi\u00f1a Real Crianza [JS93][WA91]",
+      "tasting_note": "High-toned, floral aromas with orange peel and crushed blackberries. Medium-bodied with tight, chewy tannins that are polished and intense. Serious length and focus. Very drinkable now, but even better in 2024.",
+      "points": 93,
+      "price": 14.49,
+      "url": "https://bottlebarn.com/products/2022-cune-vina-real-crianza",
+      "variety": "Tempranillo (90%) with Garnacha Tinta, Mazuelo and Graciano",
+      "country": "Spain",
+      "province": "Rioja",
+      "region": "Rioja (Sonsierra / Rioja Alavesa)",
+      "winery": "Cune (CVNE)"
+    },
+    "estimated_vfm": 42,
+    "actual_vfm": 68,
+    "delta": 26
+  },
+  {
+    "listing": {
+      "title": "2021 Bodegas Sierra Salinas Mo Monastrell [JS91]",
+      "tasting_note": "Blackberries with some toffee and dark-chocolate undertones. Beautiful, fruity palate with clean and bright fruit. Very fine tannins and a fresh finish. Yummy to drink.",
+      "points": 91,
+      "price": 10.99,
+      "url": "https://bottlebarn.com/products/2021-bodegas-sierra-salinas-mo-monastrell",
+      "variety": "Monastrell / Mourvedre",
+      "country": "Spain",
+      "province": "Alicante",
+      "region": "Alicante",
+      "winery": "Bodegas Sierra Salinas"
+    },
+    "estimated_vfm": 53,
+    "actual_vfm": 73,
+    "delta": 20
+  },
+  {
+    "listing": {
+      "title": "2024 Elk Cove Estate Pinot Gris [D93][W&S91][WE90]",
+      "tasting_note": "Richly complex, this is not a simple sipping Pinot Gris. The aromatics are floral and fruit-centred, with plenty of jasmine, ripe pear and toasted almond. The palate is surprisingly rich and complex, with lanolin, beeswax and sweet stone fruit flavours. Textured and rich with candied ginger, honeyed pear and apricot to finish. This is a lot of vinous complexity for less than $20.",
+      "points": 93,
+      "price": 16.99,
+      "url": "https://bottlebarn.com/products/2024-elk-cove-estate-pinot-gris",
+      "variety": "Pinot Gris",
+      "country": "United States",
+      "province": "Oregon",
+      "region": "Willamette Valley",
+      "winery": "Elk Cove Vineyards"
+    },
+    "estimated_vfm": 54,
+    "actual_vfm": 64,
+    "delta": 10
+  },
+  {
+    "listing": {
+      "title": "2022 DNA Vineyards Estate Russian River Pinot Noir",
+      "tasting_note": "Fresh berry-pie aromas waft from the glass of this Pinot. The palate shows spicier sassafras, cinnamon and cedar layers atop a core of Bing cherry and raspberry fruit. Great value to be had here.",
+      "points": 91,
+      "price": 14.99,
+      "url": "https://bottlebarn.com/products/2022-dna-vineyards-estate-russian-river-pinot-noir",
+      "variety": "Pinot Noir",
+      "country": "United States",
+      "province": "California",
+      "region": "Russian River Valley, Sonoma County",
+      "winery": "DNA Vineyards"
+    },
+    "estimated_vfm": 54,
+    "actual_vfm": 66,
+    "delta": 12
+  }
+]
