@@ -13,7 +13,7 @@ from __future__ import annotations
 from openai import OpenAI
 
 from agents.agent import Agent
-from utils.listings import ListingSelection, ScrapedListing
+from utils.listings import Listing, ListingSelection, ScrapedListing
 
 MODEL = "gpt-5-mini"
 # Cap the prompt: 50 described listings is roughly 20K tokens
@@ -110,3 +110,59 @@ class ScannerAgent(Agent):
         ][:5]
         self.log(f"Selected {len(selection.listings)} wines")
         return selection
+
+    def test_scan(self) -> ListingSelection:
+        """Hardcoded selection from a real scan — for testing without scraping."""
+        return ListingSelection(
+            listings=[
+                Listing(
+                    title="2024 Bogle Sauvignon Blanc [WE92]",
+                    tasting_note=(
+                        "This wine is supple and bright, with aromas of lime marmalade, "
+                        "yellow apple, pineapple and notes of bay leaf. The flavors on the "
+                        "palate are white grapefruit, preserved lemon, apple and white "
+                        "nectarine with white pepper and wet stone accents."
+                    ),
+                    points=92,
+                    price=8.99,
+                    url="https://bottlebarn.com/products/2024-bogle-sauvignon-blanc",
+                    variety="Sauvignon Blanc",
+                    country="US",
+                    province="California",
+                    region="California",
+                    winery="Bogle Vineyards",
+                ),
+                Listing(
+                    title="2021 Cannonball Cabernet Sauvignon [D91][WE90]",
+                    tasting_note=(
+                        "Inviting nose of coffee, blackberry, cigar box. Elegant, cool dark "
+                        "fruit - black cherry, goji berry, blackcurrant. Lovely ripe tannins "
+                        "and fragrant finish."
+                    ),
+                    points=91,
+                    price=13.49,
+                    url="https://bottlebarn.com/products/2021-cannonball-cabernet-sauvignon",
+                    variety="Cabernet Sauvignon",
+                    country="US",
+                    province="California",
+                    region="California",
+                    winery="Cannonball",
+                ),
+                Listing(
+                    title="2024 J. Lohr Riverstone Chardonnay [JS92][WE92]",
+                    tasting_note=(
+                        "Cooked apples, ripe pineapple, honeysuckle and hints of caramel on "
+                        "the nose. Medium- to full-bodied with a creamy texture. Generous "
+                        "and rich, with a fruity and slightly waxy aftertaste."
+                    ),
+                    points=92,
+                    price=14.99,
+                    url="https://bottlebarn.com/products/2024j-lohr-riverstone-chardonnay",
+                    variety="Chardonnay",
+                    country="US",
+                    province="California",
+                    region="Arroyo Seco, Monterey, Central Coast",
+                    winery="J. Lohr",
+                ),
+            ]
+        )
