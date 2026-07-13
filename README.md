@@ -57,7 +57,7 @@ and this project has all of them:
 | ScannerAgent | Pulls live listings from a real wine shop, ranks them by VFM, has gpt-5-mini extract the 5 best-documented critic-scored wines |
 | MessagingAgent | Sends push notifications (Pushover); logs instead if no keys configured |
 | PlanningAgent | Plain-code orchestrator: scan → estimate each wine → alert the best if it clears a threshold |
-| AutonomousPlanningAgent | The LLM version: gpt-5.1 gets scan/estimate/notify as tools and runs the workflow itself |
+| AutonomousPlanningAgent | The LLM version: gpt-5.1 gets scan/estimate/notify as tools and runs the workflow itself — this one drives the web app |
 
 ## Progress — the notebooks
 
@@ -85,8 +85,12 @@ AutonomousPlanningAgent: gpt-5.1 scans the shop, gets ensemble estimates,
 picks the single best bargain, and notifies. Result: `agent.plan()` returns
 an Opportunity — the chosen wine with its actual-vs-estimated VFM.
 
-**Day 5 (next): the Gradio UI** — a web app showing surfaced bargains, live
-agent logs, and the vectorstore in 3D.
+**[5.ipynb](5.ipynb) — The web app.** A Gradio UI built piece by piece, then
+the real thing in [`app.py`](app.py): one button. Press it and one autonomous
+run happens live — the agents' color-coded logs stream into the page while
+the LLM planner scans the shop and judges candidates. A verdict card shows
+the latest find (bargain / fair / overpriced), and a table accumulates every
+wine surfaced so far. Result: `uv run app.py` opens the app in your browser.
 
 ## Dataset
 
@@ -100,8 +104,9 @@ validation / 11K test, hosted on the HuggingFace Hub.
 utils/                      # Wine model, VFM formula, text assembly, evaluator, listings
 agents/                     # all the agents listed above
 wine_agent_framework.py     # ties it together: vectorstore, memory.json, planner
+app.py                      # the Gradio web app — uv run app.py
 specialist_service2.py      # the Modal deployment of the fine-tuned model
-1.ipynb ... 4.ipynb         # the day-by-day build, in order
+1.ipynb ... 5.ipynb         # the day-by-day build, in order
 ```
 
 ## Setup
