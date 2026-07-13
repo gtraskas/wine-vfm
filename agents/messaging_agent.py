@@ -1,8 +1,8 @@
 """Sends push notifications about wine bargains via Pushover.
 
-Needs PUSHOVER_USER and PUSHOVER_TOKEN in the environment — free keys
-from pushover.net (user key on the dashboard, token from a created
-application).
+Optional: with PUSHOVER_USER and PUSHOVER_TOKEN in the environment (free
+keys from pushover.net), alerts go to your phone; without them, alerts
+are logged instead — nothing downstream requires the real push.
 """
 
 from __future__ import annotations
@@ -25,18 +25,24 @@ class MessagingAgent(Agent):
     color = Agent.WHITE
 
     def __init__(self) -> None:
-        """Read the Pushover credentials from the environment."""
+        """Read the Pushover credentials from the environment, if present."""
         self.log("Initializing")
-        self.pushover_user = os.environ["PUSHOVER_USER"]
-        self.pushover_token = os.environ["PUSHOVER_TOKEN"]
-        self.log("Ready")
+        self.pushover_user = os.getenv("PUSHOVER_USER")
+        self.pushover_token = os.getenv("PUSHOVER_TOKEN")
+        if self.pushover_user and self.pushover_token:
+            self.log("Ready — Pushover configured")
+        else:
+            self.log("Ready — no Pushover keys, alerts will be logged only")
 
     def push(self, text: str) -> None:
-        """Send a push notification.
+        """Send a push notification, or log it if Pushover isn't configured.
 
         Args:
             text: Message body.
         """
+        if not (self.pushover_user and self.pushover_token):
+            self.log(f"Alert (log only): {text}")
+            return
         self.log(f"Pushing: {text[:60]}")
         payload = {
             "user": self.pushover_user,
