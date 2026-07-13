@@ -133,7 +133,13 @@ class Listing(BaseModel):
 class ListingSelection(BaseModel):
     """Scanner output: up to five critic-scored wines."""
 
-    listings: list[Listing]
+    listings: list[Listing] = Field(
+        description=(
+            "Your selection of the 5 wines with the clearest printed critic score and "
+            "the most detailed quoted tasting note. Only include wines where you are "
+            "confident about both the score and the price."
+        )
+    )
 
 
 class Opportunity(BaseModel):
