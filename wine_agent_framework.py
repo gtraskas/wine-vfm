@@ -13,11 +13,9 @@ import os
 import sys
 
 import chromadb
-import numpy as np
 from dotenv import load_dotenv
-from sklearn.manifold import TSNE
 
-from agents.planning_agent import PlanningAgent
+from agents.autonomous_planning_agent import AutonomousPlanningAgent
 from utils.listings import Opportunity
 
 load_dotenv(override=True)
@@ -25,8 +23,6 @@ load_dotenv(override=True)
 BG_BLUE = "\033[44m"
 WHITE = "\033[37m"
 RESET = "\033[0m"
-
-PLOT_PALETTE = ["cyan", "blue", "brown", "orange", "yellow", "green", "purple", "red"]
 
 
 def init_logging() -> None:
@@ -55,13 +51,13 @@ class WineAgentFramework:
         client = chromadb.PersistentClient(path=self.DB)
         self.collection = client.get_or_create_collection(self.COLLECTION)
         self.memory = self.read_memory()
-        self.planner: PlanningAgent | None = None
+        self.planner: AutonomousPlanningAgent | None = None
 
     def init_agents_as_needed(self) -> None:
         """Create the planner lazily — its sub-agents load models on init."""
         if not self.planner:
             self.log("Initializing agent framework")
-            self.planner = PlanningAgent(self.collection)
+            self.planner = AutonomousPlanningAgent(self.collection)
             self.log("Agent framework is ready")
 
     def read_memory(self) -> list[Opportunity]:
@@ -93,28 +89,6 @@ class WineAgentFramework:
             self.memory.append(result)
             self.write_memory()
         return self.memory
-
-    @classmethod
-    def get_plot_data(
-        cls, max_datapoints: int = 2000
-    ) -> tuple[list[str], np.ndarray, list[str]]:
-        """Vectorstore sample reduced to 3D for the UI plot, colored by country."""
-        client = chromadb.PersistentClient(path=cls.DB)
-        collection = client.get_or_create_collection(cls.COLLECTION)
-        result = collection.get(
-            include=["embeddings", "documents", "metadatas"], limit=max_datapoints
-        )
-        vectors = np.array(result["embeddings"])
-        documents = list(result["documents"] or [])
-        metadatas = result["metadatas"] or []
-        countries = [str(metadata["country"]) for metadata in metadatas]
-        unique, counts = np.unique(countries, return_counts=True)
-        top_countries = list(unique[np.argsort(counts)[::-1]][: len(PLOT_PALETTE)])
-        color_of = dict(zip(top_countries, PLOT_PALETTE, strict=False))
-        colors = [color_of.get(country, "gray") for country in countries]
-        tsne = TSNE(n_components=3, random_state=42, n_jobs=-1)
-        reduced_vectors = tsne.fit_transform(vectors)
-        return documents, reduced_vectors, colors
 
 
 if __name__ == "__main__":
