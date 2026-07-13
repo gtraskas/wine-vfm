@@ -144,6 +144,11 @@ class Listing(BaseModel):
             full=self.tasting_note,
         )
 
+    def actual_vfm(self) -> int:
+        """VFM this wine delivers at the shop price, from the printed score."""
+        price = min(max(self.price, MIN_PRICE), MAX_PRICE)
+        return compute_vfm(float(self.points), price)
+
 
 class ListingSelection(BaseModel):
     """Scanner output: up to five critic-scored wines."""
