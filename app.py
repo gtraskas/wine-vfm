@@ -18,8 +18,9 @@ import threading
 import time
 from collections.abc import Iterator
 
-import gradio as gr
 from dotenv import load_dotenv
+import gradio as gr
+from gradio.themes import Default
 
 from utils.listings import Opportunity
 from utils.log_utils import reformat
@@ -28,24 +29,72 @@ from wine_agent_framework import WineAgentFramework
 
 load_dotenv(override=True)
 
-# Define Theme Colors
-BACKGROUND = "#15151a"
-PANEL = "#222229"
-TEXT = "#f0f0f4"
+# Define Theme Colors (Light Theme)
+BACKGROUND = "#ffffff"
+PANEL = "#f8f9fa"
+TEXT = "#1a1a24"
 
-# 1. Native Theme Definition
-custom_theme = gr.themes.Default().set(
+# 1. Native Theme Definition mapped to light colors across both configurations
+custom_theme = Default().set(
+    # --- Light Mode variables ---
     body_background_fill=BACKGROUND,
     body_text_color=TEXT,
     block_background_fill=PANEL,
-    block_border_color="#444",
+    block_border_color="#cccccc",
+    background_fill_primary=BACKGROUND,
+    background_fill_secondary=PANEL,
+
+    # --- Dark Mode variables (Forced to Light to prevent browser style leakage) ---
+    body_background_fill_dark=BACKGROUND,
+    body_text_color_dark=TEXT,
+    block_background_fill_dark=PANEL,
+    block_border_color_dark="#cccccc",
+    background_fill_primary_dark=BACKGROUND,
+    background_fill_secondary_dark=PANEL,
+
+    # Sizing adjustments (larger fonts)
     block_title_text_size="20px",
     body_text_size="16px",
 )
 
-# 2. Minimal CSS
-# Used only to hide the footer, which is not part of the theme engine
-CSS = "footer {visibility: hidden}"
+# 2. CSS Overrides for modal canvas alignment and log console isolation
+CSS = f"""
+footer {{visibility: hidden}}
+
+/* Force white backgrounds on both Local and Modal */
+body, html, .gradio-container {{
+    background-color: {BACKGROUND} !important;
+}}
+
+/* Ensure all primary text is dark and legible */
+.gradio-container h1, .gradio-container h2, .gradio-container h3,
+.gradio-container p, .gradio-container strong {{
+    color: {TEXT} !important;
+}}
+
+/* Global paragraph font-size normalization */
+.gradio-container p, .gradio-container li, .gradio-container span {{
+    font-size: 16px !important;
+}}
+
+/* Block formatting */
+.gr-block, .gr-box, .gr-form, .gr-panel {{
+    background-color: {PANEL} !important;
+    border-color: #cccccc !important;
+}}
+
+/* ==========================================
+   STRICT ISOLATION FOR LOG PANEL
+   This remains 100% untouched and renders
+   as a dark terminal regardless of the page theme.
+   ========================================== */
+.log-terminal, .log-terminal * {{
+    color: #c8c8d0 !important;
+    font-family: monospace !important;
+    font-size: 13px !important;
+    background-color: #222229 !important;
+}}
+"""
 
 
 class QueueHandler(logging.Handler):
@@ -63,8 +112,8 @@ def html_for(log_data: list[str]) -> str:
     """Render the last log lines as a scrollable dark panel."""
     output = "<br>".join(log_data[-18:])
     return (
-        '<div style="height: 400px; overflow-y: auto; border: 1px solid #444; '
-        f"background-color: {PANEL}; color: #c8c8d0; padding: 10px; "
+        '<div class="log-terminal" style="height: 400px; overflow-y: auto; border: 1px solid #444; '
+        "background-color: #222229; color: #c8c8d0; padding: 10px; "
         f'font-family: monospace; font-size: 13px;">{output}</div>'
     )
 
@@ -166,28 +215,22 @@ class App:
         with gr.Blocks(title="Wine Value Hunter", theme=custom_theme, css=CSS) as ui:
             log_data = gr.State([])
 
+            gr.Markdown("# Wine Value Hunter")
             gr.Markdown(
-                f'<div style="text-align: center; font-size: 28px; '
-                f'color: {TEXT}; padding: 8px;">'
-                "<strong>Wine Value Hunter</strong> — agentic AI that finds underpriced wines "
-                "in a live shop</div>"
+                "Agentic AI that finds underpriced wines in a live shop. A fine-tuned LLM "
+                "on Modal, a RAG pipeline over 88K tasting notes, and a neural network "
+                "collaborate under an LLM planner."
             )
             gr.Markdown(
-                f'<div style="text-align: center; font-size: 16px; '
-                f'color: {TEXT}; padding: 8px;">A fine-tuned '
-                "LLM on Modal, a RAG pipeline over 88K tasting notes, and a neural network "
-                "collaborate under an LLM planner.<br>Press the button: the agents scan a real "
+                "Press the button: the agents scan a real "
                 "wine shop, judge the value of each candidate, and surface the single best "
-                "bargain.</div>"
+                "bargain for you."
             )
             with gr.Row():
                 hunt_button = gr.Button("🍷 Hunt for a bargain", variant="primary", scale=1)
-            gr.Markdown(
-                f'<div style="text-align: center; font-size: 14px; opacity: 0.85; '
-                f'color: {TEXT}; padding: 4px;">'
-                "A hunt takes a minute or two. Only one hunt runs at a time — if someone "
-                "else is hunting, yours starts automatically right after.</div>"
-            )
+
+            gr.Markdown("A hunt takes a minute or two. Only one hunt runs at a time.")
+
             headline = gr.Markdown(headline_for(initial_memory))
             gr.Markdown("**Agent activity** — live logs, one color per agent")
             logs = gr.HTML(html_for([]))
