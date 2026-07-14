@@ -28,43 +28,24 @@ from wine_agent_framework import WineAgentFramework
 
 load_dotenv(override=True)
 
+# Define Theme Colors
 BACKGROUND = "#15151a"
 PANEL = "#222229"
 TEXT = "#f0f0f4"
 
-# Force a dark background everywhere, independent of the visitor's browser/OS
-# theme setting — more reliable across browsers than Gradio's dark-mode toggle.
-CSS = f"""
-footer {{visibility: hidden}}
+# 1. Native Theme Definition
+custom_theme = gr.themes.Default().set(
+    body_background_fill=BACKGROUND,
+    body_text_color=TEXT,
+    block_background_fill=PANEL,
+    block_border_color="#444",
+    block_title_text_size="20px",
+    body_text_size="16px",
+)
 
-/* 1. Set the global text color for the whole app */
-.gradio-container {{
-    background-color: {BACKGROUND} !important;
-    color: {TEXT} !important;
-}}
-
-/* 2. Ensure all headers and body text in the app follow the color */
-.gradio-container h1, .gradio-container h2, .gradio-container h3,
-.gradio-container p, .gradio-container strong {{
-    color: {TEXT} !important;
-}}
-
-/* Body text a notch larger for readability */
-.gradio-container p, .gradio-container li {{
-    font-size: 16px !important;
-}}
-
-/* 3. Explicitly RESET the log panel to NOT inherit the forced color */
-/* This ensures your log styling remains exactly as it was originally */
-.gradio-container .gr-html div {{
-    color: inherit !important;
-}}
-
-.gr-block, .gr-box, .gr-form, .gr-panel {{
-    background-color: {PANEL} !important;
-    border-color: #444 !important;
-}}
-"""
+# 2. Minimal CSS
+# Used only to hide the footer, which is not part of the theme engine
+CSS = "footer {visibility: hidden}"
 
 
 class QueueHandler(logging.Handler):
@@ -83,7 +64,7 @@ def html_for(log_data: list[str]) -> str:
     output = "<br>".join(log_data[-18:])
     return (
         '<div style="height: 400px; overflow-y: auto; border: 1px solid #444; '
-        "background-color: #222229; color: #c8c8d0; padding: 10px; "
+        f"background-color: {PANEL}; color: #c8c8d0; padding: 10px; "
         f'font-family: monospace; font-size: 13px;">{output}</div>'
     )
 
@@ -182,7 +163,7 @@ class App:
     def build_ui(self) -> gr.Blocks:
         """Build the UI — launched locally by run(), or mounted by the deployment."""
         initial_memory = self.get_framework().memory
-        with gr.Blocks(title="Wine Value Hunter", fill_width=True, css=CSS) as ui:
+        with gr.Blocks(title="Wine Value Hunter", theme=custom_theme, css=CSS) as ui:
             log_data = gr.State([])
 
             gr.Markdown(

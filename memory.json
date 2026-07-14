@@ -83,5 +83,22 @@
     "estimated_vfm": 54,
     "actual_vfm": 66,
     "delta": 12
+  },
+  {
+    "listing": {
+      "title": "2019 River Vibes Pinot Noir [WE92]",
+      "tasting_note": "This wine is concentrated, with aromas of Boysenberry, Black plum, baking spices, brown sugar, and dried potpourri on the nose. The flavors on the palate are baked plum, black strawberry, cardamom, sliding into orange zest, dried herbs, and a dry finish. Pair with your weekday meal.",
+      "points": 92,
+      "price": 7.99,
+      "url": "https://bottlebarn.com/products/2019-river-vibes-pinot-noir",
+      "variety": "Pinot Noir",
+      "country": "United States",
+      "province": "California",
+      "region": "Mendocino",
+      "winery": "River Vibes"
+    },
+    "estimated_vfm": 51,
+    "actual_vfm": 81,
+    "delta": 30
   }
 ]
