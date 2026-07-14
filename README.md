@@ -1,5 +1,9 @@
 # wine-vfm
 
+**▶ [Live demo](https://gtraskas--wine-vfm-app-web.modal.run)** — press the
+button and watch the agents hunt a real wine bargain, live. (First load can
+take ~30s while the app wakes from sleep.)
+
 A multi-agent system that finds wine bargains. It estimates **value-for-money
 (VFM)** from tasting notes using a mix of models — a fine-tuned LLM, a
 RAG-grounded frontier LLM, and a neural network — then scans a real online
@@ -105,6 +109,7 @@ utils/                      # Wine model, VFM formula, text assembly, evaluator,
 agents/                     # all the agents listed above
 wine_agent_framework.py     # ties it together: vectorstore, memory.json, planner
 app.py                      # the Gradio web app — uv run app.py
+modal_app.py                # cloud deployment of the web app — uv run modal deploy modal_app.py
 specialist_service2.py      # the Modal deployment of the fine-tuned model
 1.ipynb ... 5.ipynb         # the day-by-day build, in order
 ```
@@ -120,6 +125,29 @@ uv sync
 Needs a `.env` with `OPENAI_API_KEY` and Modal tokens (`MODAL_TOKEN_ID`,
 `MODAL_TOKEN_SECRET`). Optional: `PUSHOVER_USER`/`PUSHOVER_TOKEN` for real
 push notifications.
+
+## Cloud deployment
+
+The whole app runs on Modal: a CPU container serves the web UI (scales to
+zero when idle) and only wakes the GPU specialist when a hunt runs. The
+agents' runtime artifacts live on a Modal Volume. One-time setup:
+
+```bash
+# the OpenAI key as a Modal secret
+uv run modal secret create openai-secret OPENAI_API_KEY=sk-...
+
+# upload the artifacts (built locally by notebooks 2 and 5)
+uv run modal volume create wine-vfm-data
+uv run modal volume put wine-vfm-data wine_vectorstore /wine_vectorstore
+uv run modal volume put wine-vfm-data vfm_net.pth /vfm_net.pth
+uv run modal volume put wine-vfm-data ensemble_model.joblib /ensemble_model.joblib
+
+# deploy — prints the public URL
+uv run modal deploy modal_app.py
+```
+
+The find history (`memory.json`) also lives on the volume, so it survives
+container restarts.
 
 ## License
 

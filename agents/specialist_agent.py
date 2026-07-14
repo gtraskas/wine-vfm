@@ -29,7 +29,9 @@ class SpecialistAgent(Agent):
         Returns:
             Estimated VFM score.
         """
-        self.log("Calling remote fine-tuned model")
+        self.log(
+            "Calling remote fine-tuned model — can take ~30s+ if the GPU container is waking up"
+        )
         result: int = self.specialist.estimate_vfm.remote(description)
         self.log(f"Result: {result}")
         return result

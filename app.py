@@ -30,7 +30,7 @@ load_dotenv(override=True)
 
 BACKGROUND = "#15151a"
 PANEL = "#222229"
-TEXT = "#d1d1d8"
+TEXT = "#f0f0f4"
 
 # Force a dark background everywhere, independent of the visitor's browser/OS
 # theme setting — more reliable across browsers than Gradio's dark-mode toggle.
@@ -47,6 +47,11 @@ footer {{visibility: hidden}}
 .gradio-container h1, .gradio-container h2, .gradio-container h3,
 .gradio-container p, .gradio-container strong {{
     color: {TEXT} !important;
+}}
+
+/* Body text a notch larger for readability */
+.gradio-container p, .gradio-container li {{
+    font-size: 16px !important;
 }}
 
 /* 3. Explicitly RESET the log panel to NOT inherit the forced color */
@@ -115,8 +120,9 @@ def headline_for(opportunities: list[Opportunity]) -> str:
         f"Wine critics scored this wine {listing.points} out of 100. At "
         f"${listing.price:.2f} a bottle, that quality-for-money works out to "
         f"**{latest.actual_vfm} on our 0-99 value scale**.\n\n"
-        f"Our models read the tasting notes alone — no price shown — and expected a wine "
-        f"like this to sit around {latest.estimated_vfm}. {delta_sentence(latest.delta)}"
+        f"Our models read only the wine's profile — the tasting notes, grape variety, "
+        f"country, region and winery, but never the price — and expected a wine like this "
+        f"to sit around {latest.estimated_vfm}. {delta_sentence(latest.delta)}"
     )
 
 
@@ -173,19 +179,19 @@ class App:
         finally:
             logging.getLogger().removeHandler(handler)
 
-    def run(self) -> None:
-        """Build and launch the UI."""
+    def build_ui(self) -> gr.Blocks:
+        """Build the UI — launched locally by run(), or mounted by the deployment."""
         initial_memory = self.get_framework().memory
         with gr.Blocks(title="Wine Value Hunter", fill_width=True, css=CSS) as ui:
             log_data = gr.State([])
 
             gr.Markdown(
-                f'<div style="text-align: center; font-size: 24px; color: {TEXT};"><strong>Wine '
+                f'<div style="text-align: center; font-size: 28px; color: {TEXT};"><strong>Wine '
                 'Value Hunter'
                 "</strong> — agentic AI that finds underpriced wines in a live shop</div>"
             )
             gr.Markdown(
-                f'<div style="text-align: center; font-size: 14px; color: {TEXT};">A fine-tuned '
+                f'<div style="text-align: center; font-size: 16px; color: {TEXT};">A fine-tuned '
                 'LLM on Modal, '
                 "a RAG pipeline over 88K tasting notes, and a neural network collaborate under "
                 "an LLM planner.<br>Press the button: the agents scan a real wine shop, judge "
@@ -193,6 +199,11 @@ class App:
             )
             with gr.Row():
                 hunt_button = gr.Button("🍷 Hunt for a bargain", variant="primary", scale=1)
+            gr.Markdown(
+                '<div style="text-align: center; font-size: 14px; opacity: 0.85">'
+                "A hunt takes a minute or two. Only one hunt runs at a time — if someone "
+                "else is hunting, yours starts automatically right after.</div>"
+            )
             headline = gr.Markdown(headline_for(initial_memory))
             gr.Markdown("**Agent activity** — live logs, one color per agent")
             logs = gr.HTML(html_for([]))
@@ -203,7 +214,14 @@ class App:
                 outputs=[log_data, logs, headline],
             )
 
-        ui.launch(share=False, inbrowser=True)
+        # One hunt at a time — a second visitor queues instead of double-spending
+        ui.queue(default_concurrency_limit=1)
+        blocks: gr.Blocks = ui
+        return blocks
+
+    def run(self) -> None:
+        """Launch the UI on a local server."""
+        self.build_ui().launch(share=False, inbrowser=True)
 
 
 if __name__ == "__main__":

@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from typing import Self
 
-from datasets import load_dataset
 from pydantic import BaseModel
 
 PREFIX: str = "Value score: "
@@ -62,6 +61,10 @@ class Wine(BaseModel):
             (train, validation, test) lists of Wine objects. Extra columns in
             the dataset (training prompts, ids) are ignored by validation.
         """
+        # Imported lazily: only the notebooks load the dataset; the deployed
+        # app doesn't need this heavy dependency in its image.
+        from datasets import load_dataset
+
         ds = load_dataset(dataset_name)
         return (
             [cls.model_validate(row) for row in ds["train"]],
