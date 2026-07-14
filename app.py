@@ -187,13 +187,13 @@ class App:
 
             gr.Markdown(
                 f'<div style="text-align: center; font-size: 28px; '
-                f'background-color: {BACKGROUND}; color: {TEXT}; padding: 8px;">'
+                f'color: {TEXT}; padding: 8px;">'
                 "<strong>Wine Value Hunter</strong> — agentic AI that finds underpriced wines "
                 "in a live shop</div>"
             )
             gr.Markdown(
                 f'<div style="text-align: center; font-size: 16px; '
-                f'background-color: {BACKGROUND}; color: {TEXT}; padding: 8px;">A fine-tuned '
+                f'color: {TEXT}; padding: 8px;">A fine-tuned '
                 "LLM on Modal, a RAG pipeline over 88K tasting notes, and a neural network "
                 "collaborate under an LLM planner.<br>Press the button: the agents scan a real "
                 "wine shop, judge the value of each candidate, and surface the single best "
@@ -203,7 +203,7 @@ class App:
                 hunt_button = gr.Button("🍷 Hunt for a bargain", variant="primary", scale=1)
             gr.Markdown(
                 f'<div style="text-align: center; font-size: 14px; opacity: 0.85; '
-                f'background-color: {BACKGROUND}; color: {TEXT}; padding: 4px;">'
+                f'color: {TEXT}; padding: 4px;">'
                 "A hunt takes a minute or two. Only one hunt runs at a time — if someone "
                 "else is hunting, yours starts automatically right after.</div>"
             )
